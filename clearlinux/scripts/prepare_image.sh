@@ -8,18 +8,16 @@ dd if=kvm-legacy.img of=/dev/vdb bs=16M oflag=direct
 
 mkdir /mnt
 mount /dev/vdb1 /mnt
-#chroot /mnt
-#useradd mkaesz
-#mkdir -p /home/mkaesz/.ssh
 
-#echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArVZFm7vRuQehYf8Qcx0MhgEWaSiRliee+Rr6YoMESoqOZ3K5+7b94Bs/aMbZeXeHJ1oH0VrLPUk1ZUMr9KufZoqDn3PPmuIUiPvbvBNYABHjkmf44W9WARGJypdYMkSp/1URZ+T8UDtWgGMYt1pmK/rackPBXLgXDNgfDRYuNc+XD19k3UdZ2OSV+l/a29snN4aDi5C+CA/bqys+Zela/CHJcB3BxhQWqZySLbOoMzh1aeFQ49Hj7tHbrxmMgP5p4P8ybN3m/tlzAHB9VhMtS75W0T9dYVdKcBMyS/0gdbFghMvfxpaN6/MW+3zkSS2xZ4KaGgpN8cJEN4X5Ft9FRw==" > /home/mkaesz/.ssh/authorized_keys
+curl -O https://raw.githubusercontent.com/mkaesz/control_plane/master/clearlinux/systemd/template-preparation.service
+mv template-preparation.service /mnt/lib/systemd/system
 
-curl systymd file
-curl prepare custom image shell sctipt
+curl -O https://raw.githubusercontent.com/mkaesz/control_plane/master/clearlinux/scripts/prepare-custom-template.sh
+chmod +x prepare-custom-template.sh
+mv prepare-custom-template.sh /mnt/
 
-cp auf vdb
-cp auf vdb
-
-systemctl enable service
+chroot /mnt
+systemctl enable template-preparation.service
+exit
 
 umount /mnt
