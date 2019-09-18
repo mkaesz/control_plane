@@ -1,7 +1,7 @@
 #!/bin/sh
 swupd bundle-add clr-installer
 
-curl kvm yaml
+curl -O https://raw.githubusercontent.com/mkaesz/control_plane/master/clearlinux/scripts/kvm-legacy.yaml
 
 clr-installer -c kvm-legacy.yaml
 
