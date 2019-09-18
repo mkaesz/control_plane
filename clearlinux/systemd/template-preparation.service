@@ -1,8 +1,14 @@
 [Unit]
 Description=Template preparation service
+After=network.target
+After=systemd-user-sessions.service
+After=network-online.target
 
 [Service]
 ExecStart=/prepare-custom-template.sh
+TimeoutSec=30
+Restart=on-failure
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target
