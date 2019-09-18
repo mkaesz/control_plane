@@ -27,8 +27,7 @@ bundles: [
     os-core-update,
     sysadmin-basic,
     systemd-networkd-autostart,
-    git,
-    
+    git 
   ]
 
 users:
