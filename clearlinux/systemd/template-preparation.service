@@ -1,0 +1,9 @@
+[Unit]
+Description=Template preparation service
+
+[Service]
+ExecStart=/prepare-custom-template.sh
+
+[Install]
+WantedBy=multi-user.target
+
