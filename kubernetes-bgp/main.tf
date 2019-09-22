@@ -2,12 +2,22 @@ provider "packet" {
   auth_token = "${var.auth_token}"
 }
 
+resource "tls_private_key" "provisioning_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "packet_ssh_key" "ssh_key_provisioning" {
+  name       = "key for terraform provisioning"
+  public_key = "${tls_private_key.provisioning_key.public_key_openssh}"
+}
+
 variable "private_key" {
-  default = "/home/mkaesz/.ssh/id_rsa"
+  default = "tls_private_key.provisioning_key.private_key_pem"
 }
 
 variable "facilities" {
-  default = ["ewr1"]
+  default = ["ams1"]
 }
 
 variable "packet_project" {
@@ -15,7 +25,7 @@ variable "packet_project" {
 }
 
 variable "worker_count" {
-  default = 2
+  default = 0
 }
 
 variable "controller_plan" {
