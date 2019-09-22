@@ -16,7 +16,7 @@ resource "null_resource" "setup_worker" {
   connection {
     user = "root"
     host = "${element(packet_device.k8s_workers.*.access_public_ipv4, count.index)}"
-    private_key = "${file(var.private_key)}"
+    private_key = "${tls_private_key.provisioning_key.private_key_pem}"
   }
 
   provisioner "file" {
@@ -61,7 +61,7 @@ resource "null_resource" "setup_worker" {
       type = "ssh"
       user = "root"
       host = "${packet_device.k8s_controller.access_public_ipv4}"
-      private_key = "${file(var.private_key)}"
+      private_key = "${tls_private_key.provisioning_key.private_key_pem}"
     }
   }
 }

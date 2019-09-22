@@ -17,7 +17,7 @@ resource "null_resource" "setup_calico_metallb" {
   connection {
     user = "root"
     host = "${packet_device.k8s_controller.access_public_ipv4}"
-    private_key = "${file(var.private_key)}"
+    private_key = "${tls_private_key.provisioning_key.private_key_pem}"
   }
 
   provisioner "file" {
@@ -39,7 +39,7 @@ resource "null_resource" "setup_metallb" {
   connection {
     user = "root"
     host = "${packet_device.k8s_controller.access_public_ipv4}"
-    private_key = "${file(var.private_key)}"
+    private_key = "${tls_private_key.provisioning_key.private_key_pem}"
   }
 
   provisioner "file" {
@@ -64,7 +64,7 @@ resource "null_resource" "calico_node_peers" {
   connection {
     user = "root"
     host = "${packet_device.k8s_controller.access_public_ipv4}"
-    private_key = "${file(var.private_key)}"
+    private_key = "${tls_private_key.provisioning_key.private_key_pem}"
   }
 
   provisioner "file" {
