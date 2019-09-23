@@ -25,7 +25,7 @@ resource "upcloud_server" "example" {
 
   storage_devices {
     # You can use both storage template names and UUIDs
-    size    = 25
+    size    = 10
     action  = "clone"
     tier    = "maxiops"
     storage = "Clearlinux with cloud-init"

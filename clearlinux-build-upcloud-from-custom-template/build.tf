@@ -5,11 +5,6 @@ provider "upcloud" {
   # export UPCLOUD_PASSWORD="Password for Upcloud API user"
 }
 
-resource "tls_private_key" "build" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 resource "upcloud_server" "build" {
   zone     = "de-fra1"
   hostname = "builder.msk.pub"
@@ -31,7 +26,7 @@ resource "upcloud_server" "build" {
 
   storage_devices {
     # You can use both storage template names and UUIDs
-    size    = 25
+    size    = 10
     action  = "clone"
     tier    = "maxiops"
     storage = "Clearlinux"

@@ -14,8 +14,8 @@ resource "upcloud_server" "build" {
   zone     = "de-fra1"
   hostname = "builder.msk.pub"
 
-  cpu = "2"
-  mem = "2048"
+  cpu = "1"
+  mem = "1024"
 
   # Login details
   login {
@@ -25,7 +25,7 @@ resource "upcloud_server" "build" {
       "${tls_private_key.build.public_key_openssh}",
     ]
 
-    create_password   = true
+    create_password   = false
     password_delivery = "none"
   }
 
