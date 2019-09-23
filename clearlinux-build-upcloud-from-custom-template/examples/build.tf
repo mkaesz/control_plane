@@ -5,71 +5,47 @@ provider "upcloud" {
   # export UPCLOUD_PASSWORD="Password for Upcloud API user"
 }
 
-resource "tls_private_key" "build" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "upcloud_server" "build" {
+resource "upcloud_server" "example" {
   zone     = "de-fra1"
-  hostname = "builder.msk.pub"
+  hostname = "example.msk.pub"
 
-  cpu = "2"
-  mem = "2048"
+  cpu = "1"
+  mem = "1024"
 
   # Login details
   login {
     user = "root"
 
-    keys = [
-      "${tls_private_key.build.public_key_openssh}",
-    ]
+    # This key will not be injected. I had to add as the Upcloud Provider wants a key and also validates it. User will be clearlinux with password clearlinux.
+    keys = ["ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArVZFm7vRuQehYf8Qcx0MhgEWaSiRliee+Rr6YoMESoqOZ3K5+7b94Bs/aMbZeXeHJ1oH0VrLPUk1ZUMr9KufZoqDn3PPmuIUiPvbvBNYABHjkmf44W9WARGJypdYMkSp/1URZ+T8UDtWgGMYt1pmK/rackPBXLgXDNgfDRYuNc+XD19k3UdZ2OSV+l/a29snN4aDi5C+CA/bqys+Zela/CHJcB3BxhQWqZySLbOoMzh1aeFQ49Hj7tHbrxmMgP5p4P8ybN3m/tlzAHB9VhMtS75W0T9dYVdKcBMyS/0gdbFghMvfxpaN6/MW+3zkSS2xZ4KaGgpN8cJEN4X5Ft9FRw==",]
 
-    create_password   = true
+    create_password   = false
     password_delivery = "none"
   }
 
   storage_devices {
     # You can use both storage template names and UUIDs
-    size    = 10
+    size    = 25
     action  = "clone"
     tier    = "maxiops"
-    storage = "01000000-0000-4000-8000-000050010300"
-  }
-
-  storage_devices {
-    # You can use both storage template names and UUIDs
-    size    = 10
-    action  = "create"
-    tier    = "maxiops"
+    storage = "Clearlinux with cloud-init"
   }
 }
 
-
 resource "null_resource" "setup_worker" {
   connection {
-    user = "root"
-    host = "${upcloud_server.build.ipv4_address}"
-    private_key = "${tls_private_key.build.private_key_pem}"
-  }
-
-  provisioner "file" {
-    source      = "${path.module}/scripts/prepare_custom_template_based_on_default_kvm_legacy_image.sh"
-    destination = "/tmp/setup.sh"
+    user = "clearlinux"
+    host = "${upcloud_server.example.ipv4_address}"
+    password = "clearlinux"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /tmp/*.sh",
-      "/tmp/setup.sh",
+      "ucd -h",
     ]
   }
 }
 
 output "Public_ip" {
-  value = upcloud_server.build.ipv4_address
-}
-
-output "Private_key" {
-  value = tls_private_key.build.private_key_pem
+  value = upcloud_server.example.ipv4_address
 }
