@@ -11,8 +11,6 @@ echo "clearlinux ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/clearlinux
 
 echo "PermitRootLogin no" > /etc/ssh/sshd_config
 echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
-echo "GSSAPIAuthentication no" >> /etc/ssh/sshd_config
-echo "UseDNS no" >> /etc/ssh/sshd_config
 echo "ClientAliveInterval 30" >> /etc/ssh/sshd_config
 echo "ClientAliveCountMax 5m" >> /etc/ssh/sshd_config
 
