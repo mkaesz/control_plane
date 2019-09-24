@@ -79,6 +79,7 @@ resource "null_resource" "setup_master" {
 #      "sudo /tmp/create-stack.sh minimal",
       "/tmp/setup-kubectl.sh",
       "mkdir -p ~/.ssh/ && mv /tmp/authorized_keys ~/.ssh/ && chown clearlinux:clearlinux ~/.ssh/authorized_keys",
+      "sudo reboot",
     ]
   }
 }
