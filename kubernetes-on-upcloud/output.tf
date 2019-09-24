@@ -1,3 +1,3 @@
-output "Publici_masterm_ip" {
+output "Public_master_ip" {
   value = upcloud_server.master.ipv4_address
 }

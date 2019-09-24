@@ -38,7 +38,7 @@ resource "upcloud_server" "master" {
  # }
 }
 
-resource "null_resource" "setup_node" {
+resource "null_resource" "setup_master" {
   connection {
     user     = "${var.default_user}"
     password = "${var.default_password}"
@@ -77,16 +77,18 @@ resource "null_resource" "setup_node" {
   }
 }
 
-#data "external" "kubeadm_join" {
-#  program = ["./scripts/kubeadm-token.sh"]
+data "external" "kubeadm_join" {
+  program = ["./scripts/kubeadm-token.sh"]
 
-#  query = {
-#    host = "${upcloud_server.master.ipv4_address}"
-#  }
+  query = {
+    host     = "${upcloud_server.master.ipv4_address}"
+    user     = "${var.default_user}"
+    password = "${var.default_password}"
+  }
 
   # Make sure to only run this after the master is up and setup
-#  depends_on = ["upcloud_server.master"]
-#}
+  depends_on = ["upcloud_server.master"]
+}
 
 data "template_file" "setup_kubeadm" {
   template = "${file("${path.module}/templates/generate-kubeadm-config.sh.tpl")}"
