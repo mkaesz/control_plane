@@ -51,8 +51,13 @@ resource "null_resource" "setup_node" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/scripts"
-    destination = "/tmp/"
+    source      = "${path.module}/scripts/setup-kubectl.sh"
+    destination = "/tmp/setup-kubectl.sh"
+  }
+
+  provisioner "file" {
+    source      = "${path.module}/scripts/create-stack.sh"
+    destination = "/tmp/create-stack.sh"
   }
 
   provisioner "file" {
@@ -66,22 +71,22 @@ resource "null_resource" "setup_node" {
       "sudo chmod +x /tmp/*.sh",
       "sudo /tmp/setup-system.sh",
       "sudo /tmp/generate-kubeadm-config.sh",
-      "sudo /tmp/create-stack.sh minimal",
+#      "sudo /tmp/create-stack.sh minimal",
       "/tmp/setup-kubectl.sh",
     ]
   }
 }
 
-data "external" "kubeadm_join" {
-  program = ["./scripts/kubeadm-token.sh"]
+#data "external" "kubeadm_join" {
+#  program = ["./scripts/kubeadm-token.sh"]
 
-  query = {
-    host = "${upcloud_server.master.ipv4_address}"
-  }
+#  query = {
+#    host = "${upcloud_server.master.ipv4_address}"
+#  }
 
   # Make sure to only run this after the master is up and setup
-  depends_on = ["upcloud_server.master"]
-}
+#  depends_on = ["upcloud_server.master"]
+#}
 
 data "template_file" "setup_kubeadm" {
   template = "${file("${path.module}/templates/generate-kubeadm-config.sh.tpl")}"
