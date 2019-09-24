@@ -10,7 +10,7 @@ resource "upcloud_server" "worker" {
   hostname   = "${format("%s-%d", "${local.hostname_worker}", count.index)}"
 
   plan = "${var.worker_plan}"
-  ipv4 = false
+ # ipv4 = false
   ipv6 = false
 
   # Login details 
@@ -47,7 +47,7 @@ resource "null_resource" "setup_worker" {
   connection {
     user     = "${var.default_user}"
     password = "${var.default_password}"
-    host     = "${element(upcloud_server.worker.*.ipv4_address, count.index)}"
+    host     = "${element(upcloud_server.worker.*.ipv4_address_private, count.index)}"
   }
 
   provisioner "file" {
@@ -74,7 +74,7 @@ resource "null_resource" "setup_worker" {
     connection {
       user     = "${var.default_user}"
       password = "${var.default_password}"
-      host     = "${upcloud_server.master.ipv4_address}"
+      host     = "${upcloud_server.master.ipv4_address_private}"
     }
   }
 }

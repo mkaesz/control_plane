@@ -1,12 +1,12 @@
 locals {
-  hostname = "${format("%s-%s-%s", "${var.facilities[0]}", "control-plane", "master")}"
+  hostname_master = "${format("%s-%s-%s", "${var.facilities[0]}", "control-plane", "master")}"
 }
 
 // Setup the kubernetes master node
 
 resource "upcloud_server" "master" {
   zone       = "${var.facilities[0]}"
-  hostname   = "${local.hostname}"
+  hostname   = "${local.hostname_master}"
 
   plan = "${var.master_plan}"
 
@@ -42,7 +42,7 @@ resource "null_resource" "setup_master" {
   connection {
     user     = "${var.default_user}"
     password = "${var.default_password}"
-    host     = "${upcloud_server.master.ipv4_address}"
+    host     = "${upcloud_server.master.ipv4_address_private}"
   }
 
   provisioner "file" {
@@ -67,7 +67,7 @@ resource "null_resource" "setup_master" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo hostnamectl set-hostname ${local.hostname}",
+      "sudo hostnamectl set-hostname ${local.hostname_master}",
       "sudo chmod +x /tmp/*.sh",
       "sudo /tmp/setup-system.sh",
       "sudo /tmp/generate-kubeadm-config.sh",
@@ -81,7 +81,7 @@ data "external" "kubeadm_join" {
   program = ["./scripts/kubeadm-token.sh"]
 
   query = {
-    host     = "${upcloud_server.master.ipv4_address}"
+    host     = "${upcloud_server.master.ipv4_address_private}"
     user     = "${var.default_user}"
     password = "${var.default_password}"
   }
@@ -94,7 +94,7 @@ data "template_file" "setup_kubeadm" {
   template = "${file("${path.module}/templates/generate-kubeadm-config.sh.tpl")}"
 
   vars = {
-    hostname		    = "${local.hostname}"
+    hostname		    = "${local.hostname_master}"
     local_ip		    = "${upcloud_server.master.ipv4_address_private}"
     kubernetes_port         = "${var.kubernetes_port}"
     kubernetes_dns_ip       = "${var.kubernetes_dns_ip}"
