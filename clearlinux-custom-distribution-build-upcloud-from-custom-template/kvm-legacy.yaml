@@ -1,0 +1,56 @@
+#clear-linux-config
+
+# switch between aliases if you want to install to an actuall block device
+# i.e /dev/sda
+block-devices: [
+   {name: "bdevice", file: "kvm-legacy.img"}
+]
+
+targetMedia:
+- name: ${bdevice}
+  size: "8G"
+  type: disk
+  children:
+  - name: ${bdevice}1
+    fstype: ext4
+    options: -O ^64bit
+    mountpoint: /
+    size: "8G"
+    type: part
+
+bundles: [
+    bootloader,
+    editors,
+    network-basic,
+    openssh-server,
+    os-core,
+    os-core-update,
+    sysadmin-basic,
+    systemd-networkd-autostart,
+    git 
+  ]
+
+users:
+- login: clearlinux
+  username: clearlinux
+  admin: true
+  # Password == clearlinux
+  password: $6$xrL6oE3Bk9PGovJO$KZA3qi3QChP071..376lCon4RTVA9dy5IWbnL58S2WPOYPHOa27qA3Z11npCe2H1wWRbOF64DZextnsJ2i4AR1
+
+autoUpdate: false
+postArchive: false
+postReboot: false
+telemetry: false
+legacyBios: true
+
+keyboard: de
+language: en_US.UTF-8
+timezone: Europe/Berlin
+kernel: kernel-kvm
+
+version: 0
+
+post-install: [
+   {cmd: "${yamlDir}/scripts/installer-post.sh ${chrootDir}"},
+]
+
