@@ -15,7 +15,7 @@ resource "upcloud_server" "master" {
     user = "root"
 
     keys = [
-      "${tls_private_key.provisioning_key.public_key_openssh}",
+      "${var.public_key}",
     ]
 
     create_password   = false
@@ -65,6 +65,11 @@ resource "null_resource" "setup_master" {
     destination = "/tmp/generate-kubeadm-config.sh"
   }
 
+  provisioner "file" {
+    content     = "${data.template_file.authorized_keys.rendered}"
+    destination = "/tmp/authorized_keys"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname ${local.hostname_master}",
@@ -73,6 +78,7 @@ resource "null_resource" "setup_master" {
       "sudo /tmp/generate-kubeadm-config.sh",
 #      "sudo /tmp/create-stack.sh minimal",
       "/tmp/setup-kubectl.sh",
+      "mkdir -p ~/.ssh/ && mv /tmp/authorized_keys ~/.ssh/ && chown clearlinux:clearlinux ~/.ssh/authorized_keys",
     ]
   }
 }

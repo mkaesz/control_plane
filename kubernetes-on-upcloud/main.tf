@@ -15,7 +15,7 @@ variable "private_key" {
 }
 
 variable "public_key" {
-  default = "tls_private_key.provisioning_key.public_key_openssh"
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEArVZFm7vRuQehYf8Qcx0MhgEWaSiRliee+Rr6YoMESoqOZ3K5+7b94Bs/aMbZeXeHJ1oH0VrLPUk1ZUMr9KufZoqDn3PPmuIUiPvbvBNYABHjkmf44W9WARGJypdYMkSp/1URZ+T8UDtWgGMYt1pmK/rackPBXLgXDNgfDRYuNc+XD19k3UdZ2OSV+l/a29snN4aDi5C+CA/bqys+Zela/CHJcB3BxhQWqZySLbOoMzh1aeFQ49Hj7tHbrxmMgP5p4P8ybN3m/tlzAHB9VhMtS75W0T9dYVdKcBMyS/0gdbFghMvfxpaN6/MW+3zkSS2xZ4KaGgpN8cJEN4X5Ft9FRw=="
 }
 
 variable "facilities" {
@@ -62,4 +62,12 @@ variable "default_user" {
 
 variable "default_password" {
   default     = "clearlinux"
+}
+
+data "template_file" "authorized_keys" {
+  template = "${file("${path.module}/templates/authorized_keys.tpl")}"
+
+  vars = {
+    public_key                = "${var.public_key}"
+  }
 }
