@@ -1,0 +1,4 @@
+resources:
+  - canal/canal.yaml
+  - canal/rbac.yaml
+

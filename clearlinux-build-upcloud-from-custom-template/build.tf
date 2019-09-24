@@ -65,7 +65,3 @@ EOT
 output "Public_ip" {
   value = upcloud_server.build.ipv4_address
 }
-
-output "Private_key" {
-  value = tls_private_key.build.private_key_pem
-}
