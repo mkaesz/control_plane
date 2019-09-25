@@ -41,14 +41,16 @@ resource "upcloud_server" "worker" {
  # }
 }
 
-resource "upcloud_tag" "worker_tag" {
-  count      = "${var.worker_count}"
-  name        = "worker"
-  description = "A Kubernetes worker node."
-  servers = [
-    "${element(upcloud_server.worker.*.id, count.index)}",
-  ]
-}
+#resource "upcloud_tag" "sdf" {
+#  count = "${var.worker_count}"
+#  name        = "worker13"
+  #description = "A Kubernetes worker node.asd"
+#  servers = [
+ #  "${element(upcloud_server.worker.*.id, count.index)}",
+   # "${upcloud_server.worker[0].id}",
+   # "${upcloud_server.worker[1].id}",
+#  ]
+#}
 
 resource "null_resource" "setup_worker" {
   count = "${var.worker_count}"

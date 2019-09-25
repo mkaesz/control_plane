@@ -23,7 +23,7 @@ variable "facilities" {
 }
 
 variable "worker_count" {
-  default = 1
+  default = 3
 }
 
 variable "kubernetes_port" {
@@ -71,3 +71,13 @@ data "template_file" "authorized_keys" {
     public_key                = "${var.public_key}"
   }
 }
+
+#resource "upcloud_tag" "kubernetes_tag" {
+#  count      = "${var.worker_count}"
+#  name        = "kubernetes"
+#  description = "A Kubernetes node."
+#  servers = [
+#    "${upcloud_server.master.id}",
+    #"${element(upcloud_server.worker.*.id, count.index)}",
+#  ]
+#}

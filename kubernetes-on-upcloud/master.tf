@@ -38,6 +38,14 @@ resource "upcloud_server" "master" {
  # }
 }
 
+resource "upcloud_tag" "master_tag" {
+  name        = "master"
+  description = "A Kubernetes master node."
+  servers = [
+    "${upcloud_server.master.id}",
+  ]
+}
+
 resource "null_resource" "setup_master" {
   connection {
     user     = "${var.default_user}"
