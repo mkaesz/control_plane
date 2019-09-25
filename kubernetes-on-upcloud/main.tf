@@ -23,7 +23,7 @@ variable "facilities" {
 }
 
 variable "worker_count" {
-  default = 3
+  default = 1
 }
 
 variable "kubernetes_port" {
