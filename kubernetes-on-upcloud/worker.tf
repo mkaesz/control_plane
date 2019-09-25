@@ -41,6 +41,15 @@ resource "upcloud_server" "worker" {
  # }
 }
 
+resource "upcloud_tag" "worker_tag" {
+  count      = "${var.worker_count}"
+  name        = "worker"
+  description = "A Kubernetes worker node."
+  servers = [
+    "${element(upcloud_server.worker.*.id, count.index)}",
+  ]
+}
+
 resource "null_resource" "setup_worker" {
   count = "${var.worker_count}"
 
@@ -83,4 +92,18 @@ resource "null_resource" "setup_worker" {
       host     = "${upcloud_server.master.ipv4_address_private}"
     }
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "kubectl delete node ${format("%s-%d", "${local.hostname_worker}", count.index)}",
+    ]
+
+    on_failure = "continue"
+
+    connection {
+      user     = "${var.default_user}"
+      password = "${var.default_password}"
+      host     = "${upcloud_server.master.ipv4_address_private}"
+    }
+  }  
 }
